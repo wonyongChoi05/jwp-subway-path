@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.section.domain.Section;
 import subway.section.domain.entity.SectionEntity;
 import subway.section.exception.SectionNotFoundException;
+import subway.station.domain.repository.StationDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 public class SectionRepositoryMapper implements SectionRepository {
 
     private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public SectionRepositoryMapper(final SectionDao sectionDao) {
+    public SectionRepositoryMapper(final SectionDao sectionDao, final StationDao stationDao) {
         this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
 
@@ -60,7 +63,7 @@ public class SectionRepositoryMapper implements SectionRepository {
     @Override
     public List<Section> findAll() {
         return sectionDao.findAll().stream()
-                .map(SectionEntity::toDomain)
+                .map(sectionEntity -> findById(sectionEntity.getId()))
                 .collect(Collectors.toList());
     }
 
